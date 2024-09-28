@@ -22,56 +22,30 @@ if ($db->checkCompleted($nrp)) {
 
 
 //validate answer values
-$answer1_err = $answer2_err = $answer3_err = $answer4_err = $answer5_err = false;
-$answer1 = $answer2 = $answer3 = $answer4 = $answer5 = "";
+$answer_ids = [];
+$answer_errs = [];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $input_answer1 = isset($_POST['Q1']) ? $_POST['Q1'] : "";
-    //valid_answer1 contains valid answer's id for question number 1 
-    $valid_answer1 = $db->getAnswerChoices('Q1');
-    if ($input_answer1 != '' && in_array($input_answer1, $valid_answer1)) {
-        $answer1 = $input_answer1;
-    } else {
-        $answer1_err = true;
+    $questions = $db->getQuestions();
+    $q_ids = [];
+
+    foreach($questions as $question){
+        array_push($q_ids, $question['id']);
     }
 
-    $input_answer2 =  isset($_POST['Q2']) ? $_POST['Q2'] : "";
-    $valid_answer2 = $db->getAnswerChoices('Q2');
-    if ($input_answer2 != '' && in_array($input_answer2, $valid_answer2)) {
-        $answer2 = $input_answer2;
-    } else {
-        $answer2_err = true;
+    foreach($q_ids as $q_id){
+        $input_answer_id = isset($_POST[$q_id])? $_POST[$q_id] : "";
+        $valid_answer_id = $db->getAnswerChoices($q_id);
+        if ($input_answer_id != '' && in_array($input_answer_id, $valid_answer_id)) {
+            array_push($answer_ids, $input_answer_id);
+        } else {
+            array_push($answer_errs, true);
+        }
     }
 
-    $input_answer3 = isset($_POST['Q3']) ? $_POST['Q3'] : "";
-    $valid_answer3 = $db->getAnswerChoices('Q3');
-    if ($input_answer3 != '' && in_array($input_answer3, $valid_answer3)) {
-        $answer3 = $input_answer3;
-    } else {
-        $answer3_err = true;
-    }
-
-    $input_answer4 = isset($_POST['Q4']) ? $_POST['Q4'] : "";
-    $valid_answer4 = $db->getAnswerChoices('Q4');
-    if ($input_answer4 != '' && in_array($input_answer4, $valid_answer4)) {
-        $answer4 = $input_answer4;
-    } else {
-        $answer4_err = true;
-    }
-
-    $input_answer5 =  isset($_POST['Q5']) ? $_POST['Q5'] : "";
-    $valid_answer5 = $db->getAnswerChoices('Q5');
-    if ($input_answer5 != '' && in_array($input_answer5, $valid_answer5)) {
-        $answer5 = $input_answer5;
-    } else {
-        $answer5_err = true;
-    }
-
-    if (!$answer1_err && !$answer2_err && !$answer3_err && !$answer4_err && !$answer5_err) {
+    if (!in_array(true, $answer_errs)) {
         $nrp = $_SESSION['nrp'];
-        $answers_id = [$answer1, $answer2, $answer3, $answer4, $answer5];
-
-        $db->insertResult($nrp, $answers_id);
+        $db->insertResult($nrp, $answer_ids);
         header("location:result.php");
     } else {
         header("location:error.php");

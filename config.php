@@ -169,7 +169,7 @@ class Database
             $stmt->bindParam(":nrp", $nrp);
             if ($stmt->execute()) {
                 $row =  $stmt->fetch(PDO::FETCH_ASSOC);
-                if (count($row) != 0) {
+                if ($row && count($row) != 0) {
                     $result = [
                         'kenyamanan' => $row['kenyamanan'],
                         'pengakuan' => $row['pengakuan'],
