@@ -13,13 +13,13 @@ choiceBoxes.forEach((choiceBox) => {
 
         // Add "selected" and "bg-red-500" classes to the clicked choiceBox
         choiceBox.classList.add("selected", "bg-red-500");
-
-        choiceBox.closest(".quiz-container").nextElementSibling.classList.remove("hidden");
+        
         setTimeout(()=>{
             choiceBox.closest(".quiz-container").classList.add("hidden");
+            choiceBox.closest(".quiz-container").nextElementSibling.classList.remove("hidden");
             choiceBox.closest(".quiz-container").querySelector(".next-question").classList.remove("hidden");
-
         }, 500)
+
     });
 });
 
@@ -31,7 +31,7 @@ firstContainer.querySelector(".prev-question").classList.add("hidden");
 let nextQuestions = Array.from(document.getElementsByClassName("next-question"));
 nextQuestions.forEach((nextQuestion)=>{
     nextQuestion.addEventListener("click", ()=>{
-        let container = nextQuestion.closest(".question-container");
+        let container = nextQuestion.closest(".quiz-container");
         let nextContainer = container.nextElementSibling;
         container.classList.add("hidden");
         nextContainer.classList.remove("hidden");
@@ -41,7 +41,7 @@ nextQuestions.forEach((nextQuestion)=>{
 let prevQuestions = Array.from(document.getElementsByClassName("prev-question"));
 prevQuestions.forEach((prevQuestion)=>{
     prevQuestion.addEventListener("click", ()=>{
-        let container = prevQuestion.closest(".question-container");
+        let container = prevQuestion.closest(".quiz-container");
         let prevContainer = container.previousElementSibling;
         container.classList.add("hidden");
         prevContainer.classList.remove("hidden");
