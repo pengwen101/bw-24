@@ -72,11 +72,11 @@ class Database
         }
 
         //convert the result into percentages
-        $sum_result = array_sum($result);
+        // $sum_result = array_sum($result);
 
-        foreach ($result as $key => $value) {
-            $result[$key] = round(($value / $sum_result) * 100, 1);
-        }
+        // foreach ($result as $key => $value) {
+        //     $result[$key] = round(($value / $sum_result) * 100, 1);
+        // }
 
         $nrp = $_SESSION['nrp'];
         $kenyamanan = $result['kenyamanan'];
@@ -113,7 +113,22 @@ class Database
         }else{
             return -1;
         }
+
+        // $sql = "UPDATE category_results SET counts = counts+1, points =points+:points WHERE category = :category AND result_order = :result_order";
+        // $i = 0;
+        // foreach($result as $key =>$value){
+        //     if ($stmt = $this->pdo->prepare($sql)) {
+        //         $stmt->bindParam(":points", $value);
+        //         $stmt->bindParam(":category", $key);
+        //         $stmt->bindParam(":result_order", $i);
+        //         $stmt->execute();
+        //     }else{
+        //         return -1;
+        //     }
+        //     $i++;
+        // }
     }
+
     public function getCategories()
     {
         $sql = "SELECT category FROM categories";
@@ -182,6 +197,11 @@ class Database
 
                     //sort based on points percentage descending
                     arsort($result);
+                     $sum_result = array_sum($result);
+
+                        foreach ($result as $key => $value) {
+                            $result[$key] = round(($value / $sum_result) * 100, 1);
+                        }
                     return $result;
                 } else {
                     return -1;
@@ -214,7 +234,7 @@ class Database
         if($tops==-1) return -1;
         $tops = explode(";", $tops);
         $tops = array_filter($tops);
-        $tops_count = array_combine($tops, array_fill(0, count($tops), -1));
+        $tops_count = array_combine($tops, array_fill(0, count($tops), 0));
 
         $sql = "SELECT tops FROM results";
         if ($stmt = $this->pdo->query($sql)) {

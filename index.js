@@ -7,12 +7,12 @@ choiceBoxes.forEach((choiceBox) => {
         // Find all choiceBoxs with the same name and remove the "selected" and "bg-red-500" classes
         choiceBoxes.forEach((otherchoiceBox) => {
             if (otherchoiceBox.getAttribute("name") === name) {
-                otherchoiceBox.classList.remove("selected", "bg-red-500");
+                otherchoiceBox.classList.remove("bg-black", "text-white");
             }
         });
 
         // Add "selected" and "bg-red-500" classes to the clicked choiceBox
-        choiceBox.classList.add("selected", "bg-red-500");
+        choiceBox.classList.add("bg-black", "text-white");
         
         setTimeout(()=>{
             choiceBox.closest(".quiz-container").classList.add("hidden");
