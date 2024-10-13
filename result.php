@@ -3,7 +3,7 @@
 session_start();
 
 // Check if the user is logged in, if not then redirect him to login page
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+if (!isset($_SESSION["google_loggedin"]) || $_SESSION["google_loggedin"] !== true) {
     header("location:login.php");
     exit;
 }
@@ -11,7 +11,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 require_once("config.php");
 
 $db = new Database();
-$nrp = $_SESSION['nrp'];
+$email = $_SESSION['google_email'];
+$nrp =  explode('@', $email)[0];
 $result = $db->getResultPrc($nrp);
 if ($result == -1) {
     header("location:error.php");
@@ -39,11 +40,15 @@ if ($similarity == -1) {
 </head>
 
 <body>
-    <div class='relative min-h-screen max-w-screen flex flex-col justify-center items-center'>
+    <div class='relative max-h-screen max-w-screen flex flex-col justify-center items-center'>
         <div class='flex w-full justify-center gap-10 items-center'>
             <div class="flex flex-col gap-2 w-[30%]">
-                <div class = "text-center">Your result:</div>
-                <div class="text-3xl text-center"><?php echo array_key_first($result) ?></div>
+                <div class="text-center">Your result:</div>
+                <?php
+                $sorted_result = $result;
+                arsort($sorted_result);
+                ?>
+                <div class="text-3xl text-center"><?php echo array_key_first($sorted_result) ?></div>
 
             </div>
 
@@ -68,47 +73,47 @@ if ($similarity == -1) {
         const ctx = document.getElementById('acquisitions');
         Chart.register(ChartDataLabels);
         new Chart(ctx, {
-            type: 'bar',
+            type: 'radar',
             data: {
                 labels: <?php echo json_encode(array_keys($result)); ?>,
                 datasets: [{
-                    label: '# of Votes',
+                    label: '% kecenderungan',
                     data: <?php echo json_encode(array_values($result)); ?>,
                     backgroundColor: [
-                        'rgba(255, 99, 71, 1)',
-                        'rgba(9, 31, 242, 0.8)',
-                        'rgba(240, 255, 45, 0.8)',
-                        'rgba(17, 231, 42, 0.8)',
-                        'rgba(201, 30, 255, 0.8)',
-                        'rgba(255, 128, 6, 0.8)'
+                        'rgba(54, 162, 235, 0.2)'
                     ],
                     borderColor: [
-                        'rgba(255, 99, 71, 1)',
-                        'rgba(9, 31, 242, 0.8)',
-                        'rgba(240, 255, 45, 0.8)',
-                        'rgba(17, 231, 42, 0.8)',
-                        'rgba(201, 30, 255, 0.8)',
-                        'rgba(255, 128, 6, 0.8)'
+                        'rgb(54, 162, 235)',
                     ],
+                    pointBackgroundColor: 'rgb(54, 162, 235)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(54, 162, 235)',
                     borderWidth: 1
                 }]
             },
             options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
+                // scales: {
+                //         y: {
+                //             beginAtZero: true
+                //         },
+                    
+                // },
+                elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
                 plugins: {
                     datalabels: {
                         // Position of the labels 
                         // (start, end, center, etc.)
-                        anchor: 'center',
+                        anchor: 'end',
                         // Alignment of the labels 
                         // (start, end, center, etc.)
-                        align: 'center',
+                        align: 'end',
                         // Color of the labels
-                        color: 'white',
+                        color: 'rgb(54, 162, 235)',
                         font: {
                             weight: 'bold',
                         },

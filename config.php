@@ -11,7 +11,7 @@ class Database
     public function __construct()
     {
         try {
-            $this->pdo = new PDO('mysql: host=' . $this->db_server . '; dbname=' . $this->db_name, $this->db_username, $this->db_password);
+            $this->pdo = new PDO('mysql: host=' . $this->db_server . '; dbname='. $this->db_name, $this->db_username, $this->db_password);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             die("ERROR COULD NOT CONNECT" . $e->getMessage());
@@ -78,7 +78,6 @@ class Database
         //     $result[$key] = round(($value / $sum_result) * 100, 1);
         // }
 
-        $nrp = $_SESSION['nrp'];
         $kenyamanan = $result['kenyamanan'];
         $pengakuan = $result['pengakuan'];
         $penerimaan = $result['penerimaan'];
@@ -196,7 +195,7 @@ class Database
                     ];
 
                     //sort based on points percentage descending
-                    arsort($result);
+                    // arsort($result);
                      $sum_result = array_sum($result);
 
                         foreach ($result as $key => $value) {

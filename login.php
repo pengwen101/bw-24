@@ -1,159 +1,142 @@
 <?php
-
 session_start();
 
-if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true){
+if (isset($_SESSION['google_loggedin']) && $_SESSION['google_loggedin'] == true) {
     header("location:index.php");
     exit();
-}
-
-require_once("config.php");
-$db = new Database();
-$identification = $password=  "";
-$identification_err = $password_err = "";
-$success;
-
-if($_SERVER['REQUEST_METHOD']=='POST'){
-    $input_identification = trim($_POST['identification']);
-    if(empty($input_identification)){
-        $identification_err = "Mohon masukkan nrp terdaftar.";
-    }else if(!filter_var($input_identification, FILTER_VALIDATE_REGEXP, array("options" => array("regexp"=> "/^[a-zA-Z0-9\s]+$/"))) && !filter_var($input_identification, FILTER_VALIDATE_EMAIL)){
-        $identification_err = "Mohon masukkan nrp valid.";
-    }else{
-        $sql = "SELECT * FROM users WHERE nrp = :identification";
-        if ($stmt = $db->pdo->prepare($sql)){
-            $stmt->bindParam(":identification", $input_identification);
-            if($stmt->execute()){
-                if($stmt ->rowCount() ==1){
-                    $identification = $input_identification;
-                }else{
-                    $identification_err = "User belum terdaftar.";
-                }
-            }
-        }
-        unset($stmt);
-    }
-
-    $input_password = trim($_POST['password']);
-    if(empty($input_password)){
-        $password_err = "Mohon masukkan password.";
-    }else{
-        $password = $input_password;
-    }
-
-    if(empty($identification_err) && empty($password_err)){
-       $sql = "SELECT password, nrp FROM users WHERE nrp = :identification";
-       if($stmt = $db -> pdo ->prepare($sql)){
-        $stmt->bindParam(":identification", $identification);
-            if($stmt->execute()){
-                $row = $stmt ->fetch();
-                if($password == $row['password']){
-                    session_start();
-                    $_SESSION["loggedin"] = true;
-                    $_SESSION["nrp"] = $row['nrp'];
-
-                   header("location:index.php");
-                }else{
-                    $success = false;
-                }
-                // $hashed_password = $row['password'];
-                // if(password_verify($password, $hashed_password)){
-                //     session_start();
-                //     $_SESSION["loggedin"] = true;
-                //     $_SESSION["nrp"] = $row['nrp'];
-
-                //    header("location:index.php");
-                // }else{
-                //     $success = false;
-                // }
-            }
-       }
-       unset($stmt);
-       unset($db -> pdo);
-       
-    }
 }
 
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <title>Sign In</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/fc45e0c6e7.js" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script>
-        $(document).ready(function() {    
-            <?php if (isset($success) && !$success): ?>
-                $("#modal").removeClass("hidden");
-                $("#close-modal").on("click", function(e) {
-                    $("#modal").addClass("hidden");
-                });
-                setTimeout(function(e) {
-                    $("#modal").addClass("hidden");
-                }, 3000);
-            <?php endif; ?>
+    <style>
+        :root {
+            --flamingo: #f2712e;
+            --jaffa: #f28b30;
+            --albescent: #f2dcc2;
+            --charcoal: #011526;
+        }
 
+        .bg-flamingo {
+            background-color: var(--flamingo) !important;
+        }
 
-            $("#reveal-pass").on("click", function(){
-                $("#password").attr("type", "text");
-                $("#reveal-pass").addClass("hidden");
-                $("#hide-pass").removeClass("hidden");
-            });
+        .color-jaffa {
+            color: var(--jaffa) !important;
+        }
 
-            $("#hide-pass").on("click", function(){
-                $("#password").attr("type", "password");
-                $("#hide-pass").addClass("hidden");
-                $("#reveal-pass").removeClass("hidden");
-            });
+        .color-flamingo {
+            color: var(--flamingo) !important;
+        }
 
-        });
-    </script>
+        .bg-jaffa {
+            background-color: var(--jaffa) !important;
+        }
+
+        .gradient-orange {
+            background: linear-gradient(269deg, #f4651a, #f28b30, #f8ae57);
+            background-size: 600% 600%;
+
+            -webkit-animation: AnimationName 12s ease infinite;
+            -moz-animation: AnimationName 12s ease infinite;
+            animation: AnimationName 12s ease infinite;
+        }
+
+        @-webkit-keyframes AnimationName {
+            0% {
+                background-position: 0% 48%
+            }
+
+            50% {
+                background-position: 100% 53%
+            }
+
+            100% {
+                background-position: 0% 48%
+            }
+        }
+
+        @-moz-keyframes AnimationName {
+            0% {
+                background-position: 0% 48%
+            }
+
+            50% {
+                background-position: 100% 53%
+            }
+
+            100% {
+                background-position: 0% 48%
+            }
+        }
+
+        @keyframes AnimationName {
+            0% {
+                background-position: 0% 48%
+            }
+
+            50% {
+                background-position: 100% 53%
+            }
+
+            100% {
+                background-position: 0% 48%
+            }
+        }
+
+        .button-orange{
+            transition: all 0.64s ease;
+        }
+
+        .button-orange:hover{
+            color: var(--albescent) !important;
+            background-color: var(--charcoal);
+            border: 1px white;
+            
+        }
+
+         .gsi-material-button-icon {
+  height: 20px;
+  margin-right: 12px;
+  min-width: 20px;
+  width: 20px;
+}
+    </style>
 </head>
+
 <body>
-<div class="relative container mx-auto flex flex-column justify-center">
-        <div class="my-10 p-10 border-[1px] rounded-lg shadow-xl">
-            <h1 class="text-2xl mb-5">Login</h1>
-            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                <div class="flex flex-col gap-2 mb-10 w-[80vw] sm:w-[40vw]">
-                    <div class="grid grid-cols-3 items-center">
-                        <label for="identification">NRP</label>
-                        <input class="px-2 py-1 col-start-2 col-end-4 rounded-full border-[1px] border-slate-300" type="text" id="identification" name="identification" value="<?php if (isset($input_identification)) echo $input_identification; ?>">
-                        <?php if ($identification_err != ""): ?>
-                            <span class="col-start-2 col-end-4 text-red-500 text-[8px] md:text-[12px] leading-none"><?php echo $identification_err ?></span>
-                        <?php endif; ?>
-                    </div>
-                    <div class="grid grid-cols-3 items-center">
-                        <label for="password">Password</label>
-                        <div class = "relative col-start-2 col-end-4">
-                            <input type = "password" class="w-full px-2 py-1 rounded-full border-[1px] border-slate-300" id="password" name="password" value="<?php if (isset($input_password)) echo $input_password; ?>">
-                            <div id = "reveal-pass" class = "cursor-pointer absolute inline-block right-[10px] top-[5px]"><i class="fa-solid fa-eye"></i></div>
-                            <div id = "hide-pass" class = "hidden cursor-pointer absolute inline-block right-[10px] top-[5px]"><i class="fa-solid fa-eye-slash"></i></div>
-                        </div>
-                        
-                        <?php if ($password_err != ""): ?>
-                            <span class="col-start-2 col-end-4 text-red-500 text-[8px] md:text-[12px] leading-none"><?php echo $password_err ?></span>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
-                <div class="w-full"><button class="w-full button px-3 py-2 bg-black rounded-full text-white mb-5">Login</button></div>
-            </form>
-        </div>
-    </div>
-
-    <div id="modal" class="hidden absolute top-0 left-0 w-screen h-screen flex flex-column justify-center">
-        <div class="w-full h-full bg-black opacity-50"></div>
-        <div class="fixed top-10 bg-white rounded p-10 h-fit text-xl">
-            <div class="flex flex-col items-center gap-4">
-                <i class="text-[60px] text-red-500 fa-solid fa-circle-xmark"></i>
-                <div>Password salah!</div>
-                <button id="close-modal" class="bg-black py-2 px-5 rounded-full text-white">OK</button>
+    <div class="overflow-hidden relative h-screen gradient-orange w-screen flex justify-center items-center bg-flamingo">
+        <div class=" border border-slate-100 backdrop-blur-sm bg-white/30 flex flex-col justify-center items-center w-[75%] sm:w-[50%] px-[50px] py-[30px] md:px-[70px] md:py-[50px] rounded-3xl">
+            <div class="text-3xl md:text-5xl font-extrabold mb-5 text-white text-center">BEGINNING WELL 2024</div>
+            <a href = "google-oauth.php">
+            <div class="cursor-pointer button-orange flex gap-1 text-sm color-flamingo md:text-xl items-center font-semibold text-center rounded-full px-6 py-2 bg-white">
+           
+            <div class = "gsi-material-button-icon"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+        <path fill="none" d="M0 0h48v48H0z"></path>
+      </svg></div>    
+            <div>Sign In With Google</div>
             </div>
+            </a> 
+
         </div>
+        <div class = "absolute left-[50px] bottom-[-10px] w-[30%]"><img src = "assets/Hopes Menyapa.png"></div>
+
     </div>
+
 </body>
+
 </html>
