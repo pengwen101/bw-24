@@ -45,7 +45,7 @@ class Database
 
     //insert user's test result
     //answers_id is an array filled with the answers that the user has chosen
-    public function insertResult($nrp, $answers_id)
+    public function insertResult($nrp, $full_name, $answers_id)
     {
         $full_result = "";
 
@@ -71,33 +71,31 @@ class Database
             $result[$category] = $points_per_category;
         }
 
-        //convert the result into percentages
-        // $sum_result = array_sum($result);
 
-        // foreach ($result as $key => $value) {
-        //     $result[$key] = round(($value / $sum_result) * 100, 1);
-        // }
-
-        $kenyamanan = $result['kenyamanan'];
-        $pengakuan = $result['pengakuan'];
-        $penerimaan = $result['penerimaan'];
-        $kontrol = $result['kontrol'];
-        $kuasa = $result['kuasa'];
-        $superioritas = $result['superioritas'];
-        $kebebasan = $result['kebebasan'];
+        $kenyamanan = $result['comfort'];
+        $pengakuan = $result['acknowledgement'];
+        $penerimaan = $result['affirmation'];
+        $kontrol = $result['order'];
+        $kuasa = $result['dominance'];
+        $superioritas = $result['excellence'];
+        $kebebasan = $result['freedom'];
 
         //convert assoc array result to string of sorted categories based on points descending
+        
         arsort($result);
         $tops = "";
         foreach ($result as $key => $value) {
             $tops .= $key . ";";
         }
+        
+        $dt = new DateTime("now", new DateTimeZone('Asia/Jakarta'));
 
-        $created_at = date('Y-m-d H:i:s');
+        $created_at = $dt->format('Y-m-d H:i:s');
 
-        $sql = "INSERT INTO results (nrp, kenyamanan, pengakuan, penerimaan, kontrol, kuasa, superioritas, kebebasan, full_result, tops, created_at) VALUES (:nrp, :kenyamanan, :pengakuan, :penerimaan, :kontrol, :kuasa, :superioritas, :kebebasan, :full_result, :tops, :created_at)";
+        $sql = "INSERT INTO results (nrp, full_name, kenyamanan, pengakuan, penerimaan, kontrol, kuasa, superioritas, kebebasan, full_result, tops, created_at) VALUES (:nrp, :full_name, :kenyamanan, :pengakuan, :penerimaan, :kontrol, :kuasa, :superioritas, :kebebasan, :full_result, :tops, :created_at)";
         if ($stmt = $this->pdo->prepare($sql)) {
             $stmt->bindParam(":nrp", $nrp);
+            $stmt->bindParam(":full_name", $full_name);
             $stmt->bindParam(":kenyamanan", $kenyamanan);
             $stmt->bindParam(":pengakuan", $pengakuan);
             $stmt->bindParam(":penerimaan", $penerimaan);
@@ -112,20 +110,6 @@ class Database
         }else{
             return -1;
         }
-
-        // $sql = "UPDATE category_results SET counts = counts+1, points =points+:points WHERE category = :category AND result_order = :result_order";
-        // $i = 0;
-        // foreach($result as $key =>$value){
-        //     if ($stmt = $this->pdo->prepare($sql)) {
-        //         $stmt->bindParam(":points", $value);
-        //         $stmt->bindParam(":category", $key);
-        //         $stmt->bindParam(":result_order", $i);
-        //         $stmt->execute();
-        //     }else{
-        //         return -1;
-        //     }
-        //     $i++;
-        // }
     }
 
     public function getCategories()
@@ -185,22 +169,20 @@ class Database
                 $row =  $stmt->fetch(PDO::FETCH_ASSOC);
                 if ($row && count($row) != 0) {
                     $result = [
-                        'kenyamanan' => $row['kenyamanan'],
-                        'pengakuan' => $row['pengakuan'],
-                        'penerimaan' => $row['penerimaan'],
-                        'kontrol' => $row['kontrol'],
-                        'kuasa' => $row['kuasa'],
-                        'superioritas' => $row['superioritas'],
-                        'kebebasan' => $row['kebebasan']
+                        'comfort' => $row['kenyamanan'],
+                        'acknowledgement' => $row['pengakuan'],
+                        'affirmation' => $row['penerimaan'],
+                        'order' => $row['kontrol'],
+                        'dominance' => $row['kuasa'],
+                        'excellence' => $row['superioritas'],
+                        'freedom' => $row['kebebasan']
                     ];
 
-                    //sort based on points percentage descending
-                    // arsort($result);
-                     $sum_result = array_sum($result);
+                    //  $sum_result = array_sum($result);
 
-                        foreach ($result as $key => $value) {
-                            $result[$key] = round(($value / $sum_result) * 100, 1);
-                        }
+                    //     foreach ($result as $key => $value) {
+                    //         $result[$key] = round(($value / 70) * 100, 1);
+                    //     }
                     return $result;
                 } else {
                     return -1;
@@ -226,36 +208,35 @@ class Database
         return -1;
     }
 
-    //percentage of other users having, for example, category A in first position, B in second position, etc...
+    //percentage of other users having category X in first position
     public function getSimilarity($nrp)
     {
+
+        $angkatan = substr($nrp, 3, 2);
         $tops = $this->getTops($nrp);
-        if($tops==-1) return -1;
+        if ($tops == -1) return -1;
         $tops = explode(";", $tops);
         $tops = array_filter($tops);
-        $tops_count = array_combine($tops, array_fill(0, count($tops), 0));
+        $top_1 = $tops[0];
+        $top_count[$top_1] = -1;
 
-        $sql = "SELECT tops FROM results";
+        $sql = "SELECT tops FROM results WHERE nrp LIKE '___" . $angkatan . "%'";
         if ($stmt = $this->pdo->query($sql)) {
             if ($stmt->execute()) {
                 $rows =  $stmt->fetchAll(PDO::FETCH_COLUMN);
-                $n_tops = count($tops);
                 $n_rows = count($rows);
-                for ($i = 0; $i < $n_tops; $i++) {
-                    for ($j = 0; $j < $n_rows; $j++) {
-                        $other_tops = explode(";", $rows[$j]);
-                        $other_tops = array_filter($other_tops);
-                        if ($tops[$i] == $other_tops[$i]) {
-                            $tops_count[$tops[$i]] += 1;
-                        }
+                for ($j = 0; $j < $n_rows; $j++) {
+                    $other_tops = explode(";", $rows[$j]);
+                    $other_tops = array_filter($other_tops);
+                    $other_top_1 = $other_tops[0];
+                    if ($top_1 == $other_top_1) {
+                        $top_count[$top_1] += 1;
                     }
                 }
 
-                foreach($tops_count as $key => $value){
-                    $tops_count[$key] = round($value/$n_rows*100,1);
-                }
+                $top_count[$top_1] = round($top_count[$top_1]/$n_rows*100,  1);
 
-                return $tops_count;
+                return $top_count;
             }
         }
         return -1;

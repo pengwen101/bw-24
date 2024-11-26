@@ -4,7 +4,7 @@ session_start();
 // Update the following variables
 $google_oauth_client_id = '497130939765-eje45ceoba39c7vsaslbqlq03fhctcfr.apps.googleusercontent.com';
 $google_oauth_client_secret = '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';
-$google_oauth_redirect_uri = 'http://localhost/TPS/google-oauth.php';
+$google_oauth_redirect_uri = 'http://localhost/bw-24/google-oauth.php';
 $google_oauth_version = 'v3';
 // If the captured code param exists and is valid
 if (isset($_GET['code']) && !empty($_GET['code'])) {
@@ -50,9 +50,7 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
             header('Location: index.php');
             exit;
         } else {
-            echo '<pre>';
-            print_r($response);
-            echo '</pre>';
+            header('location: login.php?unauthorized=true');
             exit('Could not retrieve profile information! Please try again later!');
         }
     } else {

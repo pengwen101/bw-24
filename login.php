@@ -15,127 +15,94 @@ if (isset($_SESSION['google_loggedin']) && $_SESSION['google_loggedin'] == true)
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,minimum-scale=1">
     <title>Sign In</title>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/fc45e0c6e7.js" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <style>
-        :root {
-            --flamingo: #f2712e;
-            --jaffa: #f28b30;
-            --albescent: #f2dcc2;
-            --charcoal: #011526;
-        }
+    <link rel = "stylesheet" href = "style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="assets/Logo BW.png">
 
-        .bg-flamingo {
-            background-color: var(--flamingo) !important;
-        }
-
-        .color-jaffa {
-            color: var(--jaffa) !important;
-        }
-
-        .color-flamingo {
-            color: var(--flamingo) !important;
-        }
-
-        .bg-jaffa {
-            background-color: var(--jaffa) !important;
-        }
-
-        .gradient-orange {
-            background: linear-gradient(269deg, #f4651a, #f28b30, #f8ae57);
-            background-size: 600% 600%;
-
-            -webkit-animation: AnimationName 12s ease infinite;
-            -moz-animation: AnimationName 12s ease infinite;
-            animation: AnimationName 12s ease infinite;
-        }
-
-        @-webkit-keyframes AnimationName {
-            0% {
-                background-position: 0% 48%
-            }
-
-            50% {
-                background-position: 100% 53%
-            }
-
-            100% {
-                background-position: 0% 48%
-            }
-        }
-
-        @-moz-keyframes AnimationName {
-            0% {
-                background-position: 0% 48%
-            }
-
-            50% {
-                background-position: 100% 53%
-            }
-
-            100% {
-                background-position: 0% 48%
-            }
-        }
-
-        @keyframes AnimationName {
-            0% {
-                background-position: 0% 48%
-            }
-
-            50% {
-                background-position: 100% 53%
-            }
-
-            100% {
-                background-position: 0% 48%
-            }
-        }
-
-        .button-orange{
-            transition: all 0.64s ease;
-        }
-
-        .button-orange:hover{
-            color: var(--albescent) !important;
-            background-color: var(--charcoal);
-            border: 1px white;
-            
-        }
-
-         .gsi-material-button-icon {
-  height: 20px;
-  margin-right: 12px;
-  min-width: 20px;
-  width: 20px;
-}
-    </style>
 </head>
 
 <body>
-    <div class="overflow-hidden relative h-screen gradient-orange w-screen flex justify-center items-center bg-flamingo">
+    <div class="overflow-hidden relative h-screen bg-charcoal w-screen flex justify-center items-center">
+        <div class = "absolute top-0 left-0 w-full h-full"><img class = "object-cover w-full h-full opacity-[18%]" src = "assets/asset bw_white-01.png"></div>
         <div class=" border border-slate-100 backdrop-blur-sm bg-white/30 flex flex-col justify-center items-center w-[75%] sm:w-[50%] px-[50px] py-[30px] md:px-[70px] md:py-[50px] rounded-3xl">
-            <div class="text-3xl md:text-5xl font-extrabold mb-5 text-white text-center">BEGINNING WELL 2024</div>
-            <a href = "google-oauth.php">
-            <div class="cursor-pointer button-orange flex gap-1 text-sm color-flamingo md:text-xl items-center font-semibold text-center rounded-full px-6 py-2 bg-white">
-           
-            <div class = "gsi-material-button-icon"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
-        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-        <path fill="none" d="M0 0h48v48H0z"></path>
-      </svg></div>    
-            <div>Sign In With Google</div>
-            </div>
-            </a> 
+            <div id = 'title' class="text-4xl md:text-5xl font-extrabold mb-3 text-white text-center">BEGINNING WELL 2024</div>
+            <div id = 'text-1' class = "hidden text-center text-lg font-bold text-white">Which type of characters are you?</div>
+            <div id = 'text-2' class = "hidden text-center text-lg font-bold text-white mb-5">Find out by taking this mini quiz!</div>
+            <a href="google-oauth.php">
+                <div id = 'container-text-3' class="hidden cursor-pointer flex hover:!bg-charcoal hover:!text-white text-sm bg-[#ffd451] color-charcoal transition-all md:text-xl items-center font-bold text-center rounded-full px-4 py-2 transition duration-500">
+                    <div id = 'text-3' class = 'hidden'>Sign In With Google</div>
+                </div>
+            </a>
 
         </div>
-        <div class = "absolute left-[50px] bottom-[-10px] w-[30%]"><img src = "assets/Hopes Menyapa.png"></div>
+        
+        <div class="fixed bottom-0 left-[-30px] z-5 w-[60%] lg:w-[30%]"><img class="drop-shadow-lg object-cover" src="assets/Hopes Menyapa.png"></div>
+    
 
     </div>
+
+    <script>
+            window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('unauthorized') && urlParams.get('unauthorized') === 'true') {
+                Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Use PCU email to sign in!",
+                });
+        }
+    };
+    
+    function typeEffect(element, speed) {
+            var text = element.innerHTML;
+            element.innerHTML = "";
+
+            var i = 0;
+            var timer = setInterval(function() {
+                if (i < text.length) {
+                    element.append(text.charAt(i));
+                    i++;
+                } else {
+                    clearInterval(timer);
+                }
+            }, speed);
+        }
+
+        var speed = 75;
+        var title = document.querySelector('#title');
+        var text1 = document.querySelector('#text-1');
+        var text2 = document.querySelector('#text-2');
+        var text3 = document.querySelector('#text-3');
+      
+        var delay = title.innerHTML.length * speed + speed;
+
+        typeEffect(title, speed);
+
+        setTimeout(function() {
+            text1.style.display = "inline-block";
+            typeEffect(text1, speed);
+        }, delay + 700);
+
+        setTimeout(function() {
+            text2.style.display = "inline-block";
+            typeEffect(text2, speed);
+        }, delay + 3300);
+
+        setTimeout(function() {
+            containerText3 = document.querySelector('#container-text-3');
+            containerText3.classList.remove('hidden');
+            text3.style.display = "inline-block";
+            typeEffect(text3, speed);
+        }, delay + 5800);
+
+     
+    </script>
 
 </body>
 
